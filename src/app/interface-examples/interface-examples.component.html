@@ -1,0 +1,11 @@
+<ng-container *ngIf="toDoList$|async as todos">
+    <div *ngFor="let todo of todos">
+        {{todo|json}}
+    </div>
+</ng-container>
+
+<ng-container *ngIf="usersList$|async as users">
+    <div *ngFor="let user of users">
+        {{user|json}}
+    </div>
+</ng-container>

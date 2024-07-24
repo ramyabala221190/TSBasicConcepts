@@ -1,27 +1,176 @@
-# TypescriptBasicConcepts
+### Interfaces and its usage
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.3.
+Interface defines the shape of data.It doesnt impact the bundle size. You get the productivity you
+require while developing the angular application
 
-## Development server
+Use-Cases of interfaces:
+1.  It defines the data we will be getting.
+2.  It defines the data we will be passing.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The easiest way to remember whether to use readonly or const is to ask whether you’re using it on a variable or a property. Variables use const whereas properties use readonly.
 
-## Code scaffolding
+export interface ToDo{
+  readonly userId: number, //the values of these properties cannot change
+  readonly id: number, //the values of these properties cannot change
+  title:string,
+  completed:boolean
+}
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Sometimes you don’t know all the names of a type’s properties ahead of time, but you do know the shape of the values.In those cases you can use an index signature to describe the types of possible values.
 
-## Build
+export interface User{
+  id: number,
+  name: string,
+ username: string,
+ email: string,
+ [prop:string|number]:string|number;
+}
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+In the above example, prop is an index which could be a number or string type [prop:string|number]
+The value of the property again can be string or number :string|number
 
-## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Doubts: 
 
-## Running end-to-end tests
+In User interface even if only few properties are declared, when an array of user objects with additional properties are received, there are no errors.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+But If I create a json and assign it to the property of interface User, then it throws an error
+if the json contains additional
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Types and its usage
+ 
+ Interfaces and types are similar to each other. They differ in the shape of the data that they can
+ represent.
+ Interfaces can represent only object like structures.
+ types can also represent primitive types in addition to object like structures.
+
+
+### Enums and its usage
+
+Enum represents a set of named constants. Each enum member has a value associated with it, which can either be constant or computed.
+
+If you dont specify any values for any of the enum members, it will be auto-incremented starting from 0,
+as you see for the Direction enum. The advantage here is when you really dont care about the value
+of the enum members. You only want to ensure that they are unique.
+
+If you specify the value only for the first enum member, the value for the other members will be incremented from that value.
+
+
+export enum Direction{
+  UP, // 0 is value of UP enum member
+  DOWN, // 1 is value of DOWN enum member
+  LEFT, //2 is value of LEFT
+  RIGHT //3 is value of RIGHT
+  }
+  
+  export enum Compass{
+    NORTH =10, // 10 is value of NORTH
+    SOUTH =20, //20 is value of SOUTH
+    EAST= 30, //30 is value of EAST
+    WEST =40 //40 is value of WEST
+  }
+
+  Below is an example of a string enum. You are assigning a string value to the enum member.
+  This is useful if the value of the enum member holds significance in the code.
+  
+  export enum Response{
+    YES="yes", //"yes" is value of YES
+    NO="no" // "no" is value of NO
+  }
+
+You can convert an enum into a type using keyof typeof
+
+type ResponseType= keyof typeof Response; //convert enum into corresponding type "YES"|"NO"
+
+
+### Declaration files
+
+For TS to generate declaration files,"declaration" property in tsconfig.json must be set to true.
+Observe in any library you have generated, this property is set to true. When you build the library,
+you can d.ts files inside the dist folder for every .ts file.
+
+### Generics and its usage
+
+Generics helps to reuse the same code for different types.
+Using any will strip the type safety. So we should not go for any.
+
+While using any is certainly generic,it will cause the function to accept any and all types of arg. Also
+we are losing information on what the type was when the function returns a value.
+
+Instead we use a way of typing the argument in such a way that we can use it to denote what is being 
+returned.
+
+function someFunction<T>(arg:T):T{
+
+}
+
+<T>. where T is a variable,means that the function is expecting a type to be passed in.
+
+let n= someFunction<number>(11);
+let str= someFunction<string>('John');
+
+Instead of creating seperate functions for number and string, we have specified a 
+generic type. We have not used any. We need to pass the type to the function in <> and the arguments
+are also of the same type.
+
+This ensures that the type passed to the function and the type of arguments passed to the function
+are matching.
+
+If you are doing similar actions for different types eg: fetching products, photos,albums etc,
+create a function with generic type. So the same function can be reused for all these scenarios.
+
+function getItems<T>(url:string):Observable<T>{
+    return this.http.get(url);
+}
+
+getItems<Products>('someurl');
+getItems<Photos>('someurl');
+
+For Example, in the DataService, I have used generic type T in the fetchData().
+Also we have used it in combination with enums,types and interfaces.
+
+fetchData<T>(type:DataType):Observable<T[]>{
+    return this.http.get<T[]>(DataSource[type]);
+  }
+
+fetchData() expects a type variable T to be passed in the method call and it will return an observable also of the same type variable T.
+
+We have generated a type DataType from the enum DataSource. This restricts the arguments that can be passed to the fetchData(). The compiler will complain if it doesnt get the expected argument.
+
+We are accessing the enum member's value DataSource[type] to pass the url to the http.get().
+
+We have called fetchData() as below to get 2 different kinds of data:
+
+Here the variable T takes values: interface ToDo and interface User.
+The observable in the service also returns data of the same type variable T.
+
+ ngOnInit(){
+    this.service.fetchData<ToDo>("TODO").subscribe(
+      result=>{
+        console.log(result)
+      }
+    );
+
+    this.service.fetchData<User>("USERS").subscribe(
+      result=>{
+        console.log(result)
+      }
+    );
+
+   }
+
+
+Generics and Interfaces
+
+interface Model<T>{
+    items:T[]|undefined
+}
+
+let a:Model<string>;
+let b:Model<number>;
+
+
+
+
+
