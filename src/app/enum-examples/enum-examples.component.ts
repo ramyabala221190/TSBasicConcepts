@@ -29,7 +29,7 @@ ngOnInit(){
     let compc=Compass.WEST;
     let compd=Compass.SOUTH;
 
-    console.log(compA,compb,compc,compd)
+    console.log(compA,compb,compc,compd);
 }
 
 

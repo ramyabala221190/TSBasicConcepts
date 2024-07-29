@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DataSource, DataType, ToDo, User } from './models';
+import { DataSource, DataType, Post, ToDo, User } from './models';
 
 
 @Injectable({
@@ -19,6 +19,10 @@ export class DataService {
  //interface and enum example
   fetchUsers():Observable<User[]>{
     return this.http.get<User[]>(DataSource.USERS)
+  }
+
+  fetchPosts(): Observable<Post[]>{
+    return this.http.get<Post[]>(DataSource.POSTS)
   }
 
   //example of generic method

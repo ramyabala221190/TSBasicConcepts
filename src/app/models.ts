@@ -13,6 +13,21 @@ export interface ToDo{
    [prop:string]:string|number|{};
   }
 
+  export interface Comment{
+    postId: number,
+    id: number,
+    name: string,
+    email: string,
+    body: string
+  }
+
+  export interface Post{
+    userId:number,
+    id:number,
+    title:string,
+    body:string
+  }
+
   export enum Direction{
     UP, // 0 is value of UP
     DOWN, // 1 is value of DOWN
@@ -37,7 +52,8 @@ export interface ToDo{
 
     export enum DataSource{
         TODO="https://jsonplaceholder.typicode.com/todos",
-        USERS="https://jsonplaceholder.typicode.com/users"
+        USERS="https://jsonplaceholder.typicode.com/comments",
+        POSTS="https://jsonplaceholder.typicode.com/posts"
       }
       
     export type DataType= keyof typeof DataSource;  // "TODO"||"USERS"

@@ -29,13 +29,20 @@ export interface User{
 In the above example, prop is an index which could be a number or string type [prop:string|number]
 The value of the property again can be string or number :string|number
 
+CompileTime and Runtime checking using Interfaces
 
-Doubts: 
+While this is great for internal code type checking, it does not guard against the kind of invalid input you may encounter externally. By default, TypeScript does not verify types at runtime in order to avoid runtime overhead and aggressively optimize runtime performance as a 
+part of its design goals.
 
-In User interface even if only few properties are declared, when an array of user objects with additional properties are received, there are no errors.
+In User interface even if only few properties are declared, when an array of user objects with additional properties are received via api, there are no errors.
 
 But If I create a json and assign it to the property of interface User, then it throws an error
-if the json contains additional
+if the json contains additional properties.
+
+So for data available in advance, compile time errors will be thrown if data structure does not match the interface.
+If data available at runtime, interface does not do any typechecking.
+
+A type guard is some expression that performs a runtime check that guarantees the type in some scope
 
 
 ### Types and its usage
@@ -101,14 +108,15 @@ we are losing information on what the type was when the function returns a value
 Instead we use a way of typing the argument in such a way that we can use it to denote what is being 
 returned.
 
-function someFunction<T>(arg:T):T{
-
-}
+``````
+function someFunction<T>(arg:T):T{}
 
 <T>. where T is a variable,means that the function is expecting a type to be passed in.
 
 let n= someFunction<number>(11);
 let str= someFunction<string>('John');
+
+```
 
 Instead of creating seperate functions for number and string, we have specified a 
 generic type. We have not used any. We need to pass the type to the function in <> and the arguments
@@ -169,6 +177,18 @@ interface Model<T>{
 
 let a:Model<string>;
 let b:Model<number>;
+
+
+### Never type
+
+TypeScript introduced a new type never, which indicates the values that will never occur.
+
+The never type is used when you are sure that something is never going to occur. 
+
+The void type can have undefined or null as a value where as never cannot have any value.
+
+let something: void = null;
+let nothing: never = null; // Error: Type 'null' is not assignable to type 'never'
 
 
 
