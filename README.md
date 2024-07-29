@@ -18,18 +18,44 @@ export interface ToDo{
 
 Sometimes you don’t know all the names of a type’s properties ahead of time, but you do know the shape of the values.In those cases you can use an index signature to describe the types of possible values.
 
-export interface User{
-  id: number,
-  name: string,
- username: string,
- email: string,
- [prop:string|number]:string|number;
-}
+let student:Student={
+      name:"John Doe",
+      grade:2,
+      rollNo:50,
+      subjects:['History','Geography','science','Math'],
+      [key:string]:string|number|string[]   //the value of the property can be of a type of the other properties in the interface. So the ts expects that the other types must also be included. 
+   }
 
-In the above example, prop is an index which could be a number or string type [prop:string|number]
-The value of the property again can be string or number :string|number
+   console.log(student.name);
+   console.log(student['grade']);
 
-CompileTime and Runtime checking using Interfaces
+   console.log(student['motherTongue']); // in absence of index signature, you cannot access a property not present on the interface
+
+   for(let key in student){
+    console.log(`${key}:${student[key]}`) // in absence of index signature, you cannot access a property not present on the interface even via for loop
+   }
+
+   In the absence of index signature, you will get the below error in both the examples.
+  Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Student'.
+  No index signature with a parameter of type 'string' was found on type 'Student'.ts
+
+[key:string]:string|number|string[] is an index signature.
+In the above example, key is an index which could be a number or string type [key:string|number]
+The value of the property again can be string or number :string|number.
+
+This means with the help of index signature, I can access properties, whose names I am not aware at the moment but I know their data type
+and their shape.
+In the above example, the index signature, will allow me access property names which are a string eg: 'motherTongue' and the value of those
+properties can be a string/number/string[].
+
+In the below example, in the absence of index signature, you can access unknown properties that dont exist on the interface using keyof.
+
+for(let key in student){
+    console.log(`${key}:${student[key as keyof Student]}`) // in absence of index signature, you can use keyof to prevent typeerrors
+   }
+
+
+### CompileTime and Runtime checking using Interfaces
 
 While this is great for internal code type checking, it does not guard against the kind of invalid input you may encounter externally. By default, TypeScript does not verify types at runtime in order to avoid runtime overhead and aggressively optimize runtime performance as a 
 part of its design goals.
@@ -44,6 +70,17 @@ If data available at runtime, interface does not do any typechecking.
 
 A type guard is some expression that performs a runtime check that guarantees the type in some scope
 
+Below is type guard which can be used to check if a property is present in the response
+
+export const isType= <T>(objectToBeChecked:any,propertyToBeChecked: keyof T): objectToBeChecked is T =>{
+    return (objectToBeChecked as T)[propertyToBeChecked] !== undefined;
+}
+
+"objectToBeChecked is T" is a type predicate.
+
+Type predicates in TypeScript are functions that return a boolean value and are used to narrow down the type of a variable. They are primarily used in conditional blocks to check whether a variable is of a particular type and then perform specific operations accordingly. Type predicates can be defined using the “is” keyword in TypeScript.
+
+In the above syntax, "T" is the name of the type you want to check, and the "objectToBeChecked' is the variable whose type you want to narrow down. The “is” keyword specifies that the function returns a boolean value, and the "objectToBeChecked is T" tells TypeScript that the variable is of the specified type if the function returns true.
 
 ### Types and its usage
  

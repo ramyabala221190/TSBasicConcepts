@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { EMPTY, Observable, catchError, from, map, mergeMap, of, tap, throwError } from 'rxjs';
 import { DataService } from '../data.service';
-import { Comment, Post, ToDo, User } from '../models';
-import { isType } from '../typeguards';
+import { Comment, Post, Student, ToDo, User } from '../models';
+import { isStringType, isType } from '../typeguards';
 import * as comments from '../../assets/comments.json';
 
 @Component({
@@ -21,6 +21,42 @@ export class InterfaceExamplesComponent {
 
 
   ngOnInit(){
+
+    //example for primitive type guard.
+
+    let str1="Hello World";
+    let num= 123;
+    let arr=[1,2,3,4];
+
+    console.log(isStringType(str1)); //true
+    console.log(isStringType(num)); //false
+    console.log(isStringType(arr)); //false
+ 
+
+    //example for index signatures
+   let student:Student={
+      name:"John Doe",
+      grade:2,
+      rollNo:50,
+      subjects:['History','Geography','science','Math']
+   }
+
+
+   console.log(student.name);
+   console.log(student['grade']);
+
+   //console.log(student['motherTongue']); // in absence of index signature, you cannot access a property not present on the interface
+
+   //iterating through the object
+   for(let key in student){
+    //console.log(`${key}:${student[key]}`) // in absence of index signature, you cannot access a property not present on the interface even via for loop
+   }
+
+   for(let key in student){
+    console.log(`${key}:${student[key as keyof Student]}`) // in absence of index signature, you can use keyof to prevent typeerrors as in the above example
+   }
+
+  
     this.toDoList$=this.service.fetchToDos();
 
     //compile-time type check for data known in advance

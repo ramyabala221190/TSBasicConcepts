@@ -1,3 +1,11 @@
+export interface Student{
+  name:string,
+  grade:number,
+  rollNo:number,
+  subjects:string[],
+  [key:string]:string|number|string[] //index signature
+}
+
 export interface ToDo{
     readonly userId: number, //the values of these properties cannot change
     readonly id: number, //the values of these properties cannot change
